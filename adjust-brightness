@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# Handle invalid argument conditions
+
+[[ $# != 1 ]] && {
+    >&2 echo "error: Invalid number of arguments"
+    exit 1
+}
+
+! [[ $1 =~ ^-?[0-9]+$ ]] && {
+    >&2 echo "error: Invalid argument type (only integers allowed)"
+    exit 2
+}
+
+[[ $1 -lt -100 || $1 -gt 100 ]] && {
+    >&2 echo "error: Invalid argument value (only values between -100 and 100)"
+    exit 3
+}
+
+# Get values
+
+value=$1
+dir=$(ls /sys/class/backlight/)
+read brightness < /sys/class/backlight/$dir/brightness
+read max_brightness < /sys/class/backlight/$dir/max_brightness
+
+# Calculate new brightness value
+
+new_brightness=$[$brightness + $value * $max_brightness / 100]
+
+[[ $new_brightness -gt 26666 ]] && new_brightness=26666
+[[ $new_brightness -lt 0 ]] && new_brightness=0
+
+# Write value to file and display percentage in console
+
+echo $new_brightness > /sys/class/backlight/$dir/brightness
+echo $[$new_brightness * 100 / $max_brightness]

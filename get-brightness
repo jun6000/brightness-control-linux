@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Get current brightness and max brightness values
+
+dir=$(ls /sys/class/backlight/)
+read brightness < /sys/class/backlight/$dir/brightness
+read max_brightness < /sys/class/backlight/$dir/max_brightness
+
+# Calculate percentage and echo to shell
+
+echo "$[$brightness * 100 / $max_brightness]%"
