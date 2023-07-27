@@ -34,4 +34,4 @@ new_brightness=$[$brightness + $value * $max_brightness / 100]
 # Write value to file and display percentage in console
 
 echo $new_brightness > /sys/class/backlight/$dir/brightness
-echo $[$new_brightness * 100 / $max_brightness]
+echo "$[$new_brightness * 100 / $max_brightness]%"
